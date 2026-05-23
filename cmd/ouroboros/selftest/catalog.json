@@ -1,0 +1,33 @@
+{
+  "schema_version": "0.1.0",
+  "_comment": "Synthetic exposure catalog used by `ouroboros selftest`. Entries reference fixture packages that do not exist on any real registry; the names are deliberately obvious so this catalog is never confused with production threat intel.",
+  "entries": [
+    {
+      "id": "selftest-npm-evil",
+      "name": "ouroboros selftest fixture (npm)",
+      "ecosystem": "npm",
+      "package": "ouroboros-selftest-evil",
+      "versions": ["0.0.0"],
+      "severity": "critical",
+      "source": "ouroboros selftest"
+    },
+    {
+      "id": "selftest-pypi-evil",
+      "name": "ouroboros selftest fixture (pypi)",
+      "ecosystem": "pypi",
+      "package": "ouroboros-selftest-evil",
+      "versions": ["0.0.0"],
+      "severity": "critical",
+      "source": "ouroboros selftest"
+    },
+    {
+      "id": "selftest-mcp-evil",
+      "name": "ouroboros selftest fixture (mcp docker)",
+      "ecosystem": "mcp",
+      "package": "ghcr.io/ouroboros-selftest/evil-mcp",
+      "versions": ["0.0.0"],
+      "severity": "critical",
+      "source": "ouroboros selftest"
+    }
+  ]
+}

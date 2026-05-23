@@ -1,0 +1,9 @@
+/ouroboros
+*.test
+*.out
+*.ndjson
+.idea/
+.vscode/
+
+# goreleaser output
+/dist/

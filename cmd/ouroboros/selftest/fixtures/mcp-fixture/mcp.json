@@ -1,0 +1,14 @@
+{
+  "_comment": "Synthetic MCP config used by `ouroboros selftest`. The image ref is deliberately implausible so this fixture cannot collide with a real catalog entry.",
+  "mcpServers": {
+    "ouroboros-selftest-mcp": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "ghcr.io/ouroboros-selftest/evil-mcp:0.0.0"
+      ]
+    }
+  }
+}
