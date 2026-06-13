@@ -69,26 +69,26 @@ func resolveRoots(profile string, explicit []string, opts rootsOpts) (roots []sc
 
 	if opts.AllUsers && profile == model.ProfileDeep {
 		return nil, nil, fmt.Errorf(
-			"--all-users is not valid with --profile deep.\n" +
-				"deep is the incident-response profile and intentionally requires explicit --root paths.\n" +
-				"To fan out a deep sweep across users, pass --root /Users/<name> per user.")
+			"--all-users is not valid with --profile deep\n" +
+				"deep is the incident-response profile and intentionally requires explicit --root paths\n" +
+				"to fan out a deep sweep across users, pass --root /Users/<name> per user")
 	}
 
 	if len(explicit) > 0 {
 		if opts.AllUsers {
 			return nil, nil, fmt.Errorf(
-				"--all-users cannot be combined with explicit --root entries.\n" +
-					"--all-users expands the profile's curated defaults across every user home.\n" +
-					"Either drop --all-users and enumerate roots manually, or drop --root and let --all-users expand the defaults.")
+				"--all-users cannot be combined with explicit --root entries\n" +
+					"--all-users expands the profile's curated defaults across every user home\n" +
+					"either drop --all-users and enumerate roots manually, or drop --root and let --all-users expand the defaults")
 		}
 		roots = make([]scanner.Root, 0, len(explicit))
 		for _, p := range explicit {
 			kind := classifyRoot(p, profile)
 			if isBroadHomeRoot(p) && profile != model.ProfileDeep {
 				return nil, nil, fmt.Errorf(
-					"profile=%s refuses broad home/filesystem root %q.\n"+
-						"baseline and project profiles are source/root-allowlist inventories — they do not walk bare home directories.\n"+
-						"For an incident-response exposure scan that does walk home roots, re-run with --profile deep.",
+					"profile=%s refuses broad home/filesystem root %q\n"+
+						"baseline and project profiles are source/root-allowlist inventories — they do not walk bare home directories\n"+
+						"for an incident-response exposure scan that does walk home roots, re-run with --profile deep",
 					profile, p)
 			}
 			roots = append(roots, scanner.Root{Path: p, Kind: kind})
@@ -103,14 +103,14 @@ func resolveRoots(profile string, explicit []string, opts rootsOpts) (roots []sc
 		roots, notes = projectDefaultRoots(opts)
 	case model.ProfileDeep:
 		return nil, nil, fmt.Errorf(
-			"profile=deep requires at least one explicit --root.\n" +
-				"deep is the incident-response profile and is intentionally not auto-configured.\n" +
-				"Pass the home root(s) you want to scan, e.g. --root \"$HOME\" or --root /Users/<name>.")
+			"profile=deep requires at least one explicit --root\n" +
+				"deep is the incident-response profile and is intentionally not auto-configured\n" +
+				"pass the home root(s) you want to scan, e.g. --root \"$HOME\" or --root /Users/<name>")
 	}
 
 	if len(roots) == 0 {
 		return nil, nil, fmt.Errorf(
-			"profile=%s found no default roots on this host. Pass --root explicitly.", profile)
+			"profile=%s found no default roots on this host; pass --root explicitly", profile)
 	}
 	return roots, notes, nil
 }
