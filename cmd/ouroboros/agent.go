@@ -130,12 +130,12 @@ func agentScanOnce(ctx context.Context, st *store.SQLite, profile string, catalo
 
 	var stored int
 	cfg := scanner.Config{
-		Profile:      profile,
-		Roots:        roots,
-		Catalog:      catalog,
-		BaseRecord:   base,
-		Emitter:      emitter,
-		Concurrency:  4,
+		Profile:     profile,
+		Roots:       roots,
+		Catalog:     catalog,
+		BaseRecord:  base,
+		Emitter:     emitter,
+		Concurrency: 4,
 		OnPackageObserved: func(r model.Record) error {
 			stored++
 			return st.UpsertComponent(ctx, ep.DeviceID, runID, r, time.Now().UTC())

@@ -46,7 +46,7 @@ func openSink(dest, filePath string, appendMode bool, h sinkHTTPOpts) (io.Writer
 		} else {
 			flag |= os.O_TRUNC
 		}
-		f, err := os.OpenFile(filePath, flag, 0o644)
+		f, err := os.OpenFile(filePath, flag, 0o600)
 		if err != nil {
 			return nil, nil, fmt.Errorf("open output file: %w", err)
 		}
