@@ -1,0 +1,31 @@
+# Keep the build context tiny and deterministic: ship only what the
+# multi-stage build needs (go sources, modules, VERSION, catalogs, license).
+
+# VCS / tooling
+.git
+.gitignore
+.github
+.claude
+.idea
+.vscode
+
+# Local build artifacts
+/ouroboros
+/dist
+*.test
+*.out
+*.ndjson
+coverage*
+
+# Docker / compose (not needed inside the build context)
+Dockerfile
+.dockerignore
+docker-compose*.yml
+
+# Docs that don't affect the binary (README is copied explicitly if wanted)
+docs
+*.md
+!README.md
+
+# OS noise
+.DS_Store

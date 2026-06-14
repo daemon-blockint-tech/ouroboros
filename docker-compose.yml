@@ -1,0 +1,71 @@
+# Ouroboros agent — periodic read-only inventory of a mounted host tree,
+# persisted to SQLite for drift analysis.
+#
+# IMPORTANT: a container only sees what you mount into it. The host paths you
+# want inventoried must be bind-mounted read-only, and the scan must target
+# those in-container paths with `--profile deep --root <path>`. The default
+# `baseline`/`project` profiles look for real home/toolchain layouts that do
+# not exist inside the container.
+#
+# Usage:
+#   cp .env.example .env   # set OUROBOROS_TOKEN / device id if shipping to HTTP
+#   docker compose up --build
+#
+services:
+  agent:
+    build:
+      context: .
+      args:
+        VERSION: ${OUROBOROS_VERSION:-dev}
+    image: ghcr.io/daemon-blockint-tech/ouroboros:latest
+    container_name: ouroboros-agent
+    command:
+      - agent
+      - --profile=deep
+      - --root=/scan/home
+      - --interval=6h
+      - --db=/data/agent.db
+      - --exposure-catalog=/opt/ouroboros/threat_intel
+      - --semver-match
+
+    # Host tree to inventory, read-only. Replace with the paths you care about.
+    volumes:
+      - type: bind
+        source: ${SCAN_ROOT:-./}
+        target: /scan/home
+        read_only: true
+      - type: volume
+        source: ouroboros-db
+        target: /data
+
+    # Credentials for the optional HTTP sink are read from the environment by
+    # name (never passed as CLI literals). Uncomment the sink flags above and
+    # add --http-token-env=OUROBOROS_TOKEN to use them.
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      # os.UserHomeDir() inside distroless resolves via /etc/passwd; HOME is set
+      # explicitly so any home-relative fallback is deterministic.
+      HOME: /home/nonroot
+
+    # ---- Hardening: this tool never needs to write outside /data or escalate.
+    read_only: true
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    tmpfs:
+      - /tmp:size=16m
+    restart: unless-stopped
+    # Bound resource use so a pathological scan can't starve the host.
+    mem_limit: 256m
+    pids_limit: 256
+    healthcheck:
+      test: ["CMD", "/usr/local/bin/ouroboros", "version"]
+      interval: 1m
+      timeout: 5s
+      retries: 3
+
+volumes:
+  ouroboros-db:
